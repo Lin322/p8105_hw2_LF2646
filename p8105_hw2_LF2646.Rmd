@@ -107,3 +107,13 @@ In this dataset:
 ##Description of the dataset 
 This dataset contains information about each entrance and exit for each subway station in NYC. Data cleaning steps include formatting variable names into proper style, selecting needed variables, tidying the route names and number, and convert the character "entry" into logical variable. After the cleaning an dtidying, there are total `r nrow(nyc_trans)` rows and `r ncol(nyc_trans)` columns in the dataset. It is a tidy dataset with `r ncol(nyc_trans)`
 variables: `r names(nyc_trans)`.
+
+##Distinct statione, ADA, and wending
+```{r}
+filter(nyc_trans, ada == TRUE) %>%
+distinct(line, station_name) %>%
+count()
+```
+
+* There are `r distinct(nyc_trans, line, station_name) %>% count()` stations in NYC
+* Among those `r distinct(nyc_trans, line, station_name) %>% count()` stations in NYC, `r filter(nyc_trans, ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant. 
