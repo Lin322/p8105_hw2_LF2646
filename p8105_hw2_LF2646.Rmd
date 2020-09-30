@@ -81,7 +81,7 @@ In this dataset:
 
 #Problem 2
 
-##Import and clean NYC Transit data
+##Import, clean, and tidy the NYC Transit data. Convert "entry". 
 
 ```{r import_clean}
  nyc_trans = 
@@ -94,9 +94,16 @@ In this dataset:
            )) %>% 
   janitor::clean_names() %>% 
   select(line:entry, vending, ada) %>% 
-  pivot_longer(route1:route11, names_to = "route", names_prefix = "route", values_to = "exit") %>% 
-  mutate(entry=ifelse(entry == "YES", "yes", "no" ))
-
+  pivot_longer(
+    route1:route11,
+    names_to = "route_name", 
+    names_prefix = "route_number", 
+    values_to = "exit") %>% 
+  
+  mutate(entry = recode(entry, YES = "TRUE", NO = "FALSE")) 
 
 ```
 
+##Description of the dataset 
+This dataset contains information about each entrance and exit for each subway station in NYC. Data cleaning steps include formatting variable names into proper style, selecting needed variables, tidying the route names and number, and convert the character "entry" into logical variable. After the cleaning an dtidying, there are total `r nrow(nyc_trans)` rows and `r ncol(nyc_trans)` columns in the dataset. It is a tidy dataset with `r ncol(nyc_trans)`
+variables: `r names(nyc_trans)`.
