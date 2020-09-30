@@ -2,10 +2,12 @@
 title: "P8105_HW02_LF2649"
 author: "Lin_Feng_LF2649"
 date: "September 24, 2020"
-output: github_document
+output: 
+      github_document:
+        toc : true
 ---
 
-```{r}
+```{r setup}
 library(tidyverse)
 library(readxl)
 ```
@@ -15,10 +17,9 @@ library(readxl)
 ## Read the Mr.Traswheel dataset
 
 ```{r}
-trashwheel_df=
-  read_xlsx(
-    "./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
-    sheet = "Mr. Trash Wheel",
+trashwheel_df = read_xlsx(
+    "./Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "Mr. Trash Wheel", 
     range = cell_cols("A:N")) %>% 
   janitor::clean_names() %>% 
   drop_na(dumpster) %>% 
@@ -28,7 +29,7 @@ trashwheel_df=
   )
 ```
 
-## Read precipatation data
+## Read precipatation data for 2018 and 2017
 
 ```{r}
 precip_2018=
@@ -46,7 +47,7 @@ precip_2018=
 
 precip_2017=
   read_excel(
-    "./Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    "./Trash-Wheel-Collection-Totals-8-6-19.xlsx",
     sheet = "2017 Precipitation", 
     skip = 1) %>% 
   janitor::clean_names() %>% 
@@ -55,19 +56,47 @@ precip_2017=
   relocate(year)
 ```
 
-Combine annual precipitation
+Combine annual precipitation: 
 
 ```{r}
-month_df = 
-  tibble(
+month_df = tibble(
     month = 1:12, 
     month_name = month.name
-  )
+)
 
-precip_df = 
-  bind_rows(precip_2018, precip_2017)
+precip_df = bind_rows(precip_2018, precip_2017)
 
-left_join(precip_df, month_df, by = "month")
+precip_df = left_join(precip_df, month_df, by = "month")
 ```
 
-The dataset contains information from the Mr. Trashwheel trash collector in Baltimore, Maryland. As trash enters the inner harboe, the trashwheel collects that trash, and stores it in a dumster. The dataset contains information on year, month, and trash collected, include some specific kinds of trash. there are a lot of `r nrow(trashwheel_df)` rows in pur final dataset. additional datas heets include month and year. 
+The dataset contains information from the Mr. Trashwheel trash collector in Baltimore, Maryland. 
+As trash enters the inner harboe, the trashwheel collects that trash, and stores it in a dumster. 
+The dataset contains information on year, month, and trash collected, include some specific kinds of trash. 
+There are a lot of `r nrow(trashwheel_df)` rows in pur final dataset. Additional datasheets include month and year. 
+In this dataset: 
+
+* The median number of sports balls found in a dumpster in 2017 was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`
+* The total precipitation in 2018 was `r precip_df %>% filter(year == 2018) %>% pull(total) %>% sum()` inches.
+
+
+#Problem 2
+
+##Import and clean NYC Transit data
+
+```{r import_clean}
+ nyc_trans = 
+  read_csv("./NYC_Transit.csv", 
+           col_types = cols(
+             Route8 = col_character(),
+             Route9 = col_character(),
+             Route10 = col_character(),
+             Route11 = col_character()
+           )) %>% 
+  janitor::clean_names() %>% 
+  select(line:entry, vending, ada) %>% 
+  pivot_longer(route1:route11, names_to = "route", names_prefix = "route", values_to = "exit") %>% 
+  mutate(entry=ifelse(entry == "YES", "yes", "no" ))
+
+
+```
+
