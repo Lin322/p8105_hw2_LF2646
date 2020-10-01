@@ -137,12 +137,10 @@ replace month number with month name;
 create a president variable taking values gop and dem, and remove prez_dem and prez_gop; 
 and remove the day variable.
 ```{r pols_month}
-pols_month = read_csv("./5308/pols-month.csv") %>% 
-  janitor::clean_names() %>% 
-  separate(mon, c("year", "m_d"), sep = 4) %>% 
-  separate(m_d, c(month",  "day"), sep = 4) %>% 
-  mutate(year = as.double(year),day = as.double(day))
-  
+pols_df = read_csv("./5308/pols-month.csv") %>%
+  janitor::clean_names() %>%
+  separate(mon,into = c("year", "month", "day")) %>% 
+  mutate(month = month.abb[as.factor(month)])
   
 ```
 
