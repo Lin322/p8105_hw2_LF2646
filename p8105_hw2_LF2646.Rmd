@@ -163,7 +163,7 @@ snp_df = read_csv("./5308/snp.csv") %>%
   janitor::clean_names() %>% 
   separate(date, sep="/", into = c("month", "day", "year")) %>% 
   mutate(month = month.abb[as.factor(month)]) %>% 
-  relocate(year, month)
+  select(year, month,close)
 ```
 ##Third, deal with the unemployment dataset
 
@@ -183,11 +183,15 @@ unemp_df = read_csv("./5308/unemployment.csv") %>%
   
   
 ```
-##Join the datasets by merging snp into pols, and merging unemployment into the result.
+##Join the datasets
 ```{r}
 join1_df = left_join(pols_df, snp_df, by = c("year","month"))
 
-join_df = left_join(join1_df,unemp_df, by = c("year", "month"))
+join_df = left_join(join1_df,unemp_df, by = c("year", "month")) 
+  
 ```
+
+
+This dataset is retrieved from FiveThirtyEight website. In the join_df dataset, we have `r nrow(noin_df)` rows and `r ncol(join_df)` variables: `r names(join_d)`. This dataset is created from left-joining three subdataset: Standard & Poor’s stock market index (S&P) dataset (snp_df), unemployment dataset (unemp_df), and umber of national politicians who are democratic or republican at any given time. 
 
 
