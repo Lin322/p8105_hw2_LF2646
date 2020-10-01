@@ -134,27 +134,32 @@ c = filter(nyc_trans, entry == TRUE, vending == "NO") %>%
 * clean the data in pols-month.csv. 
 * Use separate() to break up the variable mon into integer variables year, month, and day; 
 * replace month number with month name; 
-
-create a president variable taking values gop and dem, and remove prez_dem and prez_gop; 
-
-and remove the day variable.
+* create a president variable taking values gop and dem, and remove prez_dem and prez_gop; 
+* and remove the day variable.
 ```{r pols_month}
 pols_df = 
   read_csv("./5308/pols-month.csv") %>%
   janitor::clean_names() %>%
-  separate(
-    mon,into = c("year", "month", "day")) %>% 
+  separate(mon,into = c("year", "month", "day")) %>% 
+  mutate(month = month.abb[as.factor(month)]) %>% 
   mutate(
-    month = month.abb[as.factor(month)]) %>% 
-  mutate(
-    president = )
+    president = case_when(
+      prez_gop == 1 ~ "gop",
+      prez_dem == 1 ~ "dem",
+      TRUE ~ "na")) %>% 
+  relocate(day,prez_gop,prez_dem) %>% 
+  select(year:president)
   
-  
-  
-  
-  
-  select()
+```
 
-  
+##Second, dealing iwth snp.csv
+clean the data in snp.csv using a similar process to the above. 
+For consistency across datasets, arrange according to year and month, and organize so that year and month are the leading columns.
+
+```{r}
+snp_df = read_csv("./5308/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, sep="/", into = c("month", "day", "year")) %>% 
+  mutate(month = month.abb[as.factor(month)]) 
 ```
 
