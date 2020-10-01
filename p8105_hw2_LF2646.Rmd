@@ -56,7 +56,7 @@ precip_2017=
   relocate(year)
 ```
 
-Combine annual precipitation: 
+##Combine annual precipitation: 
 
 ```{r}
 month_df = tibble(
@@ -108,7 +108,7 @@ In this dataset:
 This dataset contains information about each entrance and exit for each subway station in NYC. Data cleaning steps include formatting variable names into proper style, selecting needed variables, tidying the route names and number, and convert the character "entry" into logical variable. After the cleaning an dtidying, there are total `r nrow(nyc_trans)` rows and `r ncol(nyc_trans)` columns in the dataset. It is a tidy dataset with `r ncol(nyc_trans)`
 variables: `r names(nyc_trans)`.
 
-##Distinct statione, ADA, and wending
+##Distinct statione, ADA, and vending
 ```{r}
 a = distinct(nyc_trans, line, station_name) %>% 
     count()
@@ -123,7 +123,7 @@ c = filter(nyc_trans, entry == TRUE, vending == "NO") %>%
 ```
 
 * There are `r distinct(nyc_trans, line, station_name) %>% count()` stations in NYC
-* `r filter(nyc_trans, ada == TRUE) %>% distinct(line, station_name) %>% count()` stations are ADA compliant among those all stations in NYC. 
+* `r filter(nyc_trans, ada == TRUE) %>% distinct(line, station_name) %>% count()` stations are ADA compliant among all stations in NYC. 
 * The propotion of station entrances / exits without vending allow entrance is `r c/a`.
 
 
@@ -141,7 +141,8 @@ pols_df =
   read_csv("./5308/pols-month.csv") %>%
   janitor::clean_names() %>%
   separate(mon,into = c("year", "month", "day")) %>% 
-  mutate(month = month.abb[as.factor(month)]) %>% 
+  mutate(month = month.abb[as.integer(month)]) %>% 
+  mutate(year = as.integer(year)) %>% 
   mutate(
     president = case_when(
       prez_gop == 1 ~ "gop",
@@ -162,7 +163,8 @@ pols_df =
 snp_df = read_csv("./5308/snp.csv") %>% 
   janitor::clean_names() %>% 
   separate(date, sep="/", into = c("month", "day", "year")) %>% 
-  mutate(month = month.abb[as.factor(month)]) %>% 
+  mutate(month = month.abb[as.integer(month)]) %>% 
+  mutate(year = as.integer(year)) %>% 
   select(year, month,close)
 ```
 ##Third, deal with the unemployment dataset
