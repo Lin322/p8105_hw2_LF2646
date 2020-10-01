@@ -133,14 +133,28 @@ c = filter(nyc_trans, entry == TRUE, vending == "NO") %>%
 
 * clean the data in pols-month.csv. 
 * Use separate() to break up the variable mon into integer variables year, month, and day; 
-replace month number with month name; 
+* replace month number with month name; 
+
 create a president variable taking values gop and dem, and remove prez_dem and prez_gop; 
+
 and remove the day variable.
 ```{r pols_month}
-pols_df = read_csv("./5308/pols-month.csv") %>%
+pols_df = 
+  read_csv("./5308/pols-month.csv") %>%
   janitor::clean_names() %>%
-  separate(mon,into = c("year", "month", "day")) %>% 
-  mutate(month = month.abb[as.factor(month)])
+  separate(
+    mon,into = c("year", "month", "day")) %>% 
+  mutate(
+    month = month.abb[as.factor(month)]) %>% 
+  mutate(
+    president = )
+  
+  
+  
+  
+  
+  select()
+
   
 ```
 
