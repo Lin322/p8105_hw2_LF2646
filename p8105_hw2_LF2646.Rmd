@@ -95,7 +95,7 @@ In this dataset:
   janitor::clean_names() %>% 
   select(line:entry, vending, ada) %>% 
   pivot_longer(
-    route1:route11,
+    route1:route11, 
     names_to = "route_name", 
     names_prefix = "route_number", 
     values_to = "exit") %>% 
@@ -110,10 +110,39 @@ variables: `r names(nyc_trans)`.
 
 ##Distinct statione, ADA, and wending
 ```{r}
-filter(nyc_trans, ada == TRUE) %>%
-distinct(line, station_name) %>%
-count()
+a = distinct(nyc_trans, line, station_name) %>% 
+    count()
+
+b = filter(nyc_trans, ada == TRUE) %>%
+    distinct(line, station_name) %>%
+    count()
+
+c = filter(nyc_trans, entry == TRUE, vending == "NO") %>%
+    distinct(line, station_name) %>%
+    count()
 ```
 
 * There are `r distinct(nyc_trans, line, station_name) %>% count()` stations in NYC
-* Among those `r distinct(nyc_trans, line, station_name) %>% count()` stations in NYC, `r filter(nyc_trans, ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant. 
+* `r filter(nyc_trans, ada == TRUE) %>% distinct(line, station_name) %>% count()` stations are ADA compliant among those all stations in NYC. 
+* The propotion of station entrances / exits without vending allow entrance is `r c/a`.
+
+
+#Problem 3
+
+##First, deal with pols-month.csv
+
+* clean the data in pols-month.csv. 
+* Use separate() to break up the variable mon into integer variables year, month, and day; 
+replace month number with month name; 
+create a president variable taking values gop and dem, and remove prez_dem and prez_gop; 
+and remove the day variable.
+```{r pols_month}
+pols_month = read_csv("./5308/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, c("year", "m_d"), sep = 4) %>% 
+  separate(m_d, c(month",  "day"), sep = 4) %>% 
+  mutate(year = as.double(year),day = as.double(day))
+  
+  
+```
+
